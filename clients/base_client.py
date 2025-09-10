@@ -84,6 +84,10 @@ def get_http_client(config: HTTPClientConfig) -> Client:
     :return: Экземпляр httpx.Client
     """
     return Client(
-        timeout=config.timeout,  # Устанавливаем таймаут для всех запросов
-        base_url=config.client_url,  # Базовый URL для API
+        timeout=config.timeout,
+        base_url=config.client_url,
+        event_hooks={
+            "request": [log_request_event_hook],  # Логирование перед запросом
+            "response": [log_response_event_hook]  # Логирование после ответа
+        }
     )
