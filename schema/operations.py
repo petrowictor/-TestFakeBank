@@ -2,6 +2,8 @@ from datetime import date
 
 from pydantic import BaseModel, Field, RootModel, ConfigDict
 
+from tools.fakers import fake
+
 
 class CreateOperationSchema(BaseModel):
     """
@@ -14,13 +16,13 @@ class CreateOperationSchema(BaseModel):
     - description (str): Описание операции
     - transaction_date (date): Дата транзакции (передаётся в формате "transactionDate")
     """
-    model_config = ConfigDict(populate_by_name=True)  # Позволяет использовать alias при сериализации/десериализации
+    model_config = ConfigDict(populate_by_name=True)
 
-    debit: float | None
-    credit: float | None
-    category: str
-    description: str
-    transaction_date: date = Field(alias="transactionDate")  # Указываем alias для соответствия API
+    debit: float | None = Field(default_factory=fake.money)  # Генерация случайной суммы списания со счёта
+    credit: float | None = Field(default_factory=fake.money)  # Генерация случайной суммы зачисления на счёт
+    category: str = Field(default_factory=fake.category)  # Генерация случайной категории
+    description: str = Field(default_factory=fake.sentence)  # Генерация случайного описания
+    transaction_date: date = Field(alias="transactionDate", default_factory=fake.date)  # Генерация случайной даты
 
 
 class UpdateOperationSchema(BaseModel):
@@ -38,11 +40,11 @@ class UpdateOperationSchema(BaseModel):
     """
     model_config = ConfigDict(populate_by_name=True)
 
-    debit: float | None
-    credit: float | None
-    category: str | None 
-    description: str | None
-    transaction_date: date | None = Field(alias="transactionDate")
+    debit: float | None = Field(default_factory=fake.money)
+    credit: float | None = Field(default_factory=fake.money)
+    category: str | None = Field(default_factory=fake.category)
+    description: str | None = Field(default_factory=fake.sentence)
+    transaction_date: date | None = Field(alias="transactionDate", default_factory=fake.date)
 
 
 class OperationSchema(CreateOperationSchema):
