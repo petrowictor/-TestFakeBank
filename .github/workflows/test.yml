@@ -3,10 +3,10 @@ name: API tests  # Название workflow
 on:
   push:
     branches:
-      - main  # Запускать workflow при пуше в main
+      - master  # Запускать workflow при пуше в main
   pull_request:
     branches:
-      - main  # Запускать workflow при открытии PR в main
+      - master  # Запускать workflow при открытии PR в main
 
 jobs:
   run-tests:  # Джоба для запуска тестов
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python  # Установка Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'  # Используем Python версии 3.12
+          python-version: '3.13'  # Используем Python версии 3.13
 
       - name: Install dependencies  # Установка зависимостей проекта
         run: |
