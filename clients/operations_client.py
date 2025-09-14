@@ -12,6 +12,15 @@ class OperationsClient(BaseClient):
     Клиент для взаимодействия с операциями.
     """
   
+    def get_operations_client(settings: Settings) -> OperationsClient:
+        """
+        Функция для создания экземпляра OperationsClient с нужными настройками.
+
+        :param settings: Конфигурация с настройками для работы с API.
+        :return: Экземпляр клиента для работы с операциями.
+        """
+        return OperationsClient(client=get_http_client(settings.fake_bank_http_client))
+
     @allure.step("Get list of operations")
     def get_operations_api(self) -> Response:
         """
@@ -87,13 +96,3 @@ class OperationsClient(BaseClient):
         response = self.create_operation_api(request)
         # Возвращаем созданную операцию как объект схемы
         return OperationSchema.model_validate_json(response.text)
-
-
-def get_operations_client(settings: Settings) -> OperationsClient:
-    """
-    Функция для создания экземпляра OperationsClient с нужными настройками.
-
-    :param settings: Конфигурация с настройками для работы с API.
-    :return: Экземпляр клиента для работы с операциями.
-    """
-    return OperationsClient(client=get_http_client(settings.fake_bank_http_client))

@@ -25,6 +25,22 @@ class BaseClient:
         """
         self.client = client
 
+    def get_http_client(config: HTTPClientConfig) -> Client:
+        """
+        Функция для инициализации HTTP-клиента.
+
+        :param config: Конфигурация HTTP-клиента
+        :return: Экземпляр httpx.Client
+        """
+        return Client(
+            timeout=config.timeout,
+            base_url=config.client_url,
+            event_hooks={
+                "request": [log_request_event_hook],  # Логирование перед запросом
+                "response": [log_response_event_hook]  # Логирование после ответа
+            }
+        )
+
     @allure.step("Make GET request to {url}")
     def get(self, url: URL | str, params: QueryParams | None = None) -> Response:
         """
@@ -75,20 +91,3 @@ class BaseClient:
         :return: HTTP-ответ
         """
         return self.client.delete(url)
-
-
-def get_http_client(config: HTTPClientConfig) -> Client:
-    """
-    Функция для инициализации HTTP-клиента.
-
-    :param config: Конфигурация HTTP-клиента
-    :return: Экземпляр httpx.Client
-    """
-    return Client(
-        timeout=config.timeout,
-        base_url=config.client_url,
-        event_hooks={
-            "request": [log_request_event_hook],  # Логирование перед запросом
-            "response": [log_response_event_hook]  # Логирование после ответа
-        }
-    )
